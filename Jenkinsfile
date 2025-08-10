@@ -1,17 +1,17 @@
 pipeline {
     agent any
+    environment {
+        IMAGE_NAME = "devopssteps/my-docker-app"
+        IMAGE_TAG = "latest"
+    }
 
     stages {
-        // stage('Clone Code') {
-        //     steps {
-        //         git 'https://github.com/devopssteps/day16.git'
-        //     }
-        // }
-
+        
         stage('Build Docker Image') {
             steps {
                 script {
-                    dockerImage = docker.build("myapp:${env.BUILD_NUMBER}")
+                    //dockerImage = docker.build("myapp:${env.BUILD_NUMBER}")
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
                 }
             }
         }
@@ -19,7 +19,8 @@ pipeline {
         stage('Run Container') {
             steps {
                 script {
-                    dockerImage.run("-p 5000:5000")
+                    //dockerImage.run("-p 5000:5000")
+                    sh "docker run -d -p 8088:80 --name demo-container ${IMAGE_NAME}:${IMAGE_TAG}"
                 }
             }
         }
